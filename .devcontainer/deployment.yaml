@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avatar-magico
+  labels:
+    app: avatar-magico
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avatar-magico
+  template:
+    metadata:
+      labels:
+        app: avatar-magico
+    spec:
+      containers:
+      - name: avatar-magico
+        image: registry.k8s.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+
+7.2 service.yaml — o endereço interno
+O Service cria um nome fixo para que outros Pods encontrem a aplicação. O load-generator usará o endereço http://avatar-magico-svc para enviar requisições.
+apiVersion: v1
+kind: Service
+metadata:
+  name: avatar-magico-svc
+  labels:
+    app: avatar-magico
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: avatar-magico
